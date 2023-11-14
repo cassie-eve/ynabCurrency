@@ -6,6 +6,9 @@
   "scripts": {
     "start": "node app.js"
   },
+  "engines": {
+    "node": "14.x"
+  },
   "keywords": [],
   "author": "Cassandra Keddis",
   "license": "ISC",
