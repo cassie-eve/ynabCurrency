@@ -118,15 +118,20 @@ const deleteTransaction = async(budgetId, transactionId) => {
 const createTransaction = async(budgetId, transactionData) => {
   // Define a list of restricted payee name prefixes
   const restrictedPayeePrefixes = [
-    'Transfer :',
     'Starting Balance',
     'Manual Balance Adjustment',
     'Reconciliation Balance Adjustment'
   ];
 
-  // Check if the transaction's payee name starts with any of the restricted prefixes
+  // Check if the transaction's payee name starts with "Transfer :" and return early if true
+  if (transactionData.payee_name.startsWith('Transfer :')) {
+    console.log('Transaction skipped due to "Transfer :" prefix');
+    return null; // Exit the function, indicating no transaction is created
+  }
+
+  // Check if the transaction's payee name starts with any of the other restricted prefixes
   if (restrictedPayeePrefixes.some(prefix => transactionData.payee_name.startsWith(prefix))) {
-    transactionData.payee_name = 'Custom Payee'; // Replace with a custom payee name
+    transactionData.payee_name = `Exchange: ${transactionData.payee_name}`;
   }
 
   const payload = { transactions: [transactionData] };
@@ -150,9 +155,6 @@ const createTransaction = async(budgetId, transactionData) => {
     throw error;
   }
 };
-
-
-
 
 const getExchangeRate = async(fromCurrency) => {
   let url;
