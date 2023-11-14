@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node your-app-filename.js"
   },
   "keywords": [],
   "author": "",
@@ -13,6 +14,7 @@
     "@supabase/supabase-js": "^2.38.4",
     "dayjs": "^1.11.10",
     "dotenv": "^16.3.1",
+    "express": "^4.18.2",
     "whatwg-url": "^14.0.0"
   }
 }

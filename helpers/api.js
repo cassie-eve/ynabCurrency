@@ -115,42 +115,42 @@ const deleteTransaction = async(budgetId, transactionId) => {
 };
 
 const createTransaction = async(budgetId, transactionData) => {
-  // Define a list of restricted payee names
-  const restrictedPayeeNames = [
+  // Define a list of restricted payee name prefixes
+  const restrictedPayeePrefixes = [
     'Transfer :',
     'Starting Balance',
     'Manual Balance Adjustment',
     'Reconciliation Balance Adjustment'
   ];
 
-  // Check if the transaction's payee name is in the restricted list
-  if (restrictedPayeeNames.includes(transactionData.payee_name)) {
-    transactionData.payee_name = 'Opening'; // Replace with 'Opening' if restricted
+  // Check if the transaction's payee name starts with any of the restricted prefixes
+  if (restrictedPayeePrefixes.some(prefix => transactionData.payee_name.startsWith(prefix))) {
+    transactionData.payee_name = 'Custom Payee'; // Replace with a custom payee name
   }
 
   const payload = { transactions: [transactionData] };
   console.log('budgetId in CreateTransaction', budgetId);
   console.log('Sending payload:', payload);
-  JSON.stringify(payload);
 
   try {
     const response = await fetch(`${ynabBaseUrl}/budgets/${budgetId}/transactions`, {
       headers,
       method: 'POST',
-      body: JSON.stringify(payload) // Ensure to use payload here
+      body: JSON.stringify(payload)
     });
     const responseBody = await response.json();
     if (!response.ok) {
       console.error("Detailed API error:", responseBody);
       throw new Error(response.statusText);
     }
-    console.log(responseBody);
     return responseBody;
   } catch (error) {
     console.error("Error creating the transaction:", error.message);
     throw error;
   }
 };
+
+
 
 
 const getExchangeRate = async(fromCurrency) => {
