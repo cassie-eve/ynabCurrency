@@ -70,7 +70,7 @@ app.get('/run-task', async(req, res) => {
     res.send('Budget processing completed.');
   } catch (error) {
     console.error(error);
-    res.status(500).send('An error occurred while processing budgets.');
+    res.status(500).send('An error occurred while processing budgets:', error);
   }
 });
 
