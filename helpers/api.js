@@ -120,12 +120,13 @@ const createTransaction = async(budgetId, transactionData) => {
   const restrictedPayeePrefixes = [
     'Starting Balance',
     'Manual Balance Adjustment',
-    'Reconciliation Balance Adjustment'
+    'Reconciliation Balance Adjustment',
+    'Transfer :'
   ];
 
   // Check if the transaction's payee name starts with "Transfer :" and return early if true
-  if (transactionData.payee_name.startsWith('Transfer :')) {
-    console.log('Transaction skipped due to "Transfer :" prefix');
+  if (transactionData.payee_name.startsWith('Transfer :') && !transactionData.category_id) {
+    console.log('Transaction skipped due to "Transfer :" prefix and no category');
     return null; // Exit the function, indicating no transaction is created
   }
 
