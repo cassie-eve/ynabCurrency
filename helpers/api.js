@@ -130,9 +130,12 @@ const createTransaction = async(budgetId, transactionData) => {
     return null; // Exit the function, indicating no transaction is created
   }
 
-  // Check if the transaction's payee name starts with any of the other restricted prefixes
-  if (restrictedPayeePrefixes.some(prefix => transactionData.payee_name.startsWith(prefix))) {
-    transactionData.payee_name = `Exchange: ${transactionData.payee_name}`;
+  const restrictedPrefix = restrictedPayeePrefixes.find(prefix => transactionData.payee_name.startsWith(prefix));
+
+  if (restrictedPrefix) {
+    // Remove the restricted prefix and trim any leading/trailing spaces
+    const newPayeeName = transactionData.payee_name.replace(restrictedPrefix, '').trim();
+    transactionData.payee_name = `Exchange: ${newPayeeName}`;
   }
 
   const payload = { transactions: [transactionData] };
