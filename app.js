@@ -1,9 +1,7 @@
-/* eslint-disable no-unused-vars */
-const AWS = require('aws-sdk');
-
 const { getExchangeRate, getTransactions, createTransaction, getAllAccounts, updateOriginalTransaction, searchTransactionsByMemo, deleteTransaction, updateServerKnowledge, getServerKnowledge } = require('./helpers/api');
 const calculateDifferenceTransaction = require('./helpers/transactions');
 
+// eslint-disable-next-line no-unused-vars
 exports.handler = async(event, context) => {
   try {
     await main();

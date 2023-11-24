@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable camelcase */
 const dayjs = require('dayjs');
-const fetch = require('node-fetch');
 require('dotenv').config();
 // Configuration
 const ynabToken = process.env.YNAB_TOKEN;
