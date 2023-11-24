@@ -1,8 +1,18 @@
-const express = require('express');
-const app = express();
+/* eslint-disable no-unused-vars */
+const AWS = require('aws-sdk');
 
 const { getExchangeRate, getTransactions, createTransaction, getAllAccounts, updateOriginalTransaction, searchTransactionsByMemo, deleteTransaction, updateServerKnowledge, getServerKnowledge } = require('./helpers/api');
 const calculateDifferenceTransaction = require('./helpers/transactions');
+
+exports.handler = async(event, context) => {
+  try {
+    await main();
+    return { statusCode: 200, body: JSON.stringify('Budget processing completed.') };
+  } catch (error) {
+    console.error(error);
+    return { statusCode: 500, body: JSON.stringify('An error occurred while processing budgets.') };
+  }
+};
 
 const processBudget = async(budgetId, flag, baseCurrency) => {
   let lastServerKnowledge = await getServerKnowledge(budgetId);
@@ -64,16 +74,6 @@ const processBudget = async(budgetId, flag, baseCurrency) => {
   }
 };
 
-app.get('/run-task', async(req, res) => {
-  try {
-    await main();
-    res.send('Budget processing completed.');
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('An error occurred while processing budgets:', error);
-  }
-});
-
 const main = async() => {
   const budgets = [
     { id: 'ae7b9d9b-43e6-4ba6-ba40-cf938710fcc6', baseCurrency: 'CAD', flag: '🇺🇸'},
@@ -84,10 +84,3 @@ const main = async() => {
     await processBudget(budget.id, budget.flag, budget.baseCurrency);
   }
 };
-
-// Start the Express server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-// Export the Express app for testing purposes
-module.exports = app;
