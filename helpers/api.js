@@ -4,7 +4,7 @@ const dayjs = require('dayjs');
 require('dotenv').config();
 // Configuration
 const ynabToken = process.env.YNAB_TOKEN;
-const ynabBaseUrl = 'https://api.youneedabudget.com/v1';
+const ynabBaseUrl = 'https://api.ynab.com/v1';
 const { createClient } = require('@supabase/supabase-js');
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
