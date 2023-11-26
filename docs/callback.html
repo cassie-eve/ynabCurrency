@@ -1,16 +1,11 @@
-window.onload = () => {
-  const hash = window.location.hash.substr(1);
-  const params = new URLSearchParams(hash);
-  const accessToken = params.get('access_token');
-
-  if (accessToken) {
-    // Save the token in local storage or handle it as needed
-    localStorage.setItem('ynabToken', accessToken);
-
-    // Optionally redirect to a different page or inform the user
-    window.location.href = '/success.html'; // Redirect to a success page
-  } else {
-    // Handle error or show message
-    alert('Failed to authenticate with YNAB');
-  }
-};
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OAuth Callback</title>
+    <!-- Include Supabase JS library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@latest"></script>
+</head>
+<body>
+    <script src="callback.js"></script>
+</body>
+</html>
