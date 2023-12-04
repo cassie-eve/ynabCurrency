@@ -114,7 +114,13 @@ const deleteTransaction = async(budgetId, transactionId) => {
   };
 };
 
-const createTransaction = async(budgetId, transactionData) => {
+const createTransaction = async(budgetId, transactionData, exchangeAcct) => {
+  // Check if the transaction is not approved; if so, do not create the transaction
+  if (!transactionData.approved) {
+    console.log('Transaction not created as it is not approved');
+    return null;
+  }
+
   // Define a list of restricted payee name prefixes
   const restrictedPayeePrefixes = [
     'Starting Balance',
@@ -123,18 +129,22 @@ const createTransaction = async(budgetId, transactionData) => {
     'Transfer :'
   ];
 
-  // Check if the transaction's payee name starts with "Transfer :" and return early if true
+  // Special handling for "Transfer :" transactions
   if (transactionData.payee_name.startsWith('Transfer :') && !transactionData.category_id) {
-    console.log('Transaction skipped due to "Transfer :" prefix and no category');
-    return null; // Exit the function, indicating no transaction is created
-  }
-
-  const restrictedPrefix = restrictedPayeePrefixes.find(prefix => transactionData.payee_name.startsWith(prefix));
-
-  if (restrictedPrefix) {
-    // Remove the restricted prefix and trim any leading/trailing spaces
-    const newPayeeName = transactionData.payee_name.replace(restrictedPrefix, '').trim();
-    transactionData.payee_name = `Exchange: ${newPayeeName}`;
+    // Modify the payee name and set the category ID if transaction is a "Transfer :" type without a category
+    const newPayeeName = transactionData.payee_name.replace('Transfer :', '').trim();
+    transactionData.payee_name = newPayeeName;
+    transactionData.category_id = exchangeAcct;
+    console.log(`exchange:`, exchangeAcct);
+  } else {
+    // Check for other restricted prefixes
+    const restrictedPrefix = restrictedPayeePrefixes.find(prefix => transactionData.payee_name.startsWith(prefix));
+    if (restrictedPrefix) {
+      // For transactions with restricted prefixes, set payee to "Auto Created" and use exchangeAcct as the category
+      console.log(`Transaction modified due to restricted prefix: ${restrictedPrefix}`);
+      transactionData.payee_name = 'Auto Created';
+      transactionData.category_id = exchangeAcct;
+    }
   }
 
   const payload = { transactions: [transactionData] };
@@ -158,6 +168,7 @@ const createTransaction = async(budgetId, transactionData) => {
     throw error;
   }
 };
+
 
 const getExchangeRate = async(fromCurrency) => {
   let url;

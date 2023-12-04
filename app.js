@@ -12,7 +12,7 @@ exports.handler = async(event, context) => {
   }
 };
 
-const processBudget = async(budgetId, flag, baseCurrency) => {
+const processBudget = async(budgetId, flag, baseCurrency, exchangeAcct) => {
   let lastServerKnowledge = await getServerKnowledge(budgetId);
   const accounts = await getAllAccounts(budgetId);
 
@@ -54,7 +54,7 @@ const processBudget = async(budgetId, flag, baseCurrency) => {
           console.log(`Transaction has been updated, removing old transaction: ${relatedTransaction.id}`);
     
           const newDifferenceTransaction = calculateDifferenceTransaction(transaction, currencyRate, account.name, secondaryAccountId);
-          await createTransaction(budgetId, newDifferenceTransaction);
+          await createTransaction(budgetId, newDifferenceTransaction, exchangeAcct);
           console.log(`New difference transaction created for updated transaction ID: ${transaction.id}`);
         }
         const updateOriginalResponse = await updateOriginalTransaction(budgetId, transaction.id);
@@ -62,7 +62,7 @@ const processBudget = async(budgetId, flag, baseCurrency) => {
         console.log('Original transaction updated successfully!');
       } else {
         const differenceTransaction = calculateDifferenceTransaction(transaction, currencyRate, account.name, secondaryAccountId);
-        await createTransaction(budgetId, differenceTransaction);
+        await createTransaction(budgetId, differenceTransaction, exchangeAcct);
         console.log(`New transaction created for ID: ${transaction.id} in budget ${budgetId}`);
         const updateOriginalResponse = await updateOriginalTransaction(budgetId, transaction.id);
         latestServerKnowledge = updateOriginalResponse.newServerKnowledge;
@@ -74,11 +74,11 @@ const processBudget = async(budgetId, flag, baseCurrency) => {
 
 const main = async() => {
   const budgets = [
-    { id: 'ae7b9d9b-43e6-4ba6-ba40-cf938710fcc6', baseCurrency: 'CAD', flag: '🇺🇸'},
-    { id: '9d532b9c-60d2-4d40-88ea-e72ddfd28fb0', baseCurrency: 'USD', flag: '🇨🇦'}
+    { id: 'ae7b9d9b-43e6-4ba6-ba40-cf938710fcc6', baseCurrency: 'CAD', flag: '🇺🇸', exchangeAcct: '70a59f56-3cfe-4833-a811-e146c6fda625'},
+    { id: '9d532b9c-60d2-4d40-88ea-e72ddfd28fb0', baseCurrency: 'USD', flag: '🇨🇦', exchangeAcct: 'def5b756-c0d8-4c12-a4ac-cd73c5b7365a'}
   ];
 
   for (const budget of budgets) {
-    await processBudget(budget.id, budget.flag, budget.baseCurrency);
+    await processBudget(budget.id, budget.flag, budget.baseCurrency, budget.exchangeAcct);
   }
 };
