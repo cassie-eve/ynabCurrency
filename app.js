@@ -67,8 +67,8 @@ const processBudget = async(budgetId, flag, baseCurrency, exchangeAcct) => {
         const updateOriginalResponse = await updateOriginalTransaction(budgetId, transaction.id);
         latestServerKnowledge = updateOriginalResponse.newServerKnowledge;
       }
+      await updateServerKnowledge(budgetId, latestServerKnowledge || newServerKnowledge);
     }
-    await updateServerKnowledge(budgetId, latestServerKnowledge || newServerKnowledge);
   }
 };
 
