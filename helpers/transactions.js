@@ -6,7 +6,10 @@ const calculateDifferenceTransaction = (transaction, currencyRate, originalAccou
   const transactionAmountInUnits = transaction.amount / 1000;
   const convertedAmountInUnits = transactionAmountInUnits * currencyRate;
   const differenceInUnits = convertedAmountInUnits - transactionAmountInUnits;
-  const differenceInMilliunits = Math.round(differenceInUnits * 1000);
+  let differenceInMilliunits = Math.round(differenceInUnits * 1000);
+
+  // Ensure the last digit is 0 for milliunits
+  differenceInMilliunits = Math.round(differenceInMilliunits / 10) * 10;
 
   const differenceTransaction = {
     account_id: accountId,
@@ -38,6 +41,9 @@ const calculateDifferenceTransaction = (transaction, currencyRate, originalAccou
         distributedDifference += subDifferenceInMilliunits;
       }
 
+      // Ensure the last digit is 0 for subtransaction milliunits
+      subDifferenceInMilliunits = Math.round(subDifferenceInMilliunits / 10) * 10;
+
       differenceTransaction.subtransactions.push({
         amount: subDifferenceInMilliunits,
         payee_id: sub.payee_id,
@@ -45,6 +51,11 @@ const calculateDifferenceTransaction = (transaction, currencyRate, originalAccou
         memo: sub.memo || null
       });
     }
+    
+    // Adjust the last subtransaction to match the total difference exactly
+    const lastSubtransaction = differenceTransaction.subtransactions[differenceTransaction.subtransactions.length - 1];
+    const totalSubtransactionAmount = differenceTransaction.subtransactions.reduce((total, sub) => total + sub.amount, 0);
+    lastSubtransaction.amount += differenceTransaction.amount - totalSubtransactionAmount;
   }
 
   return differenceTransaction;
