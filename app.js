@@ -74,7 +74,7 @@ const processBudget = async(budgetId, flag, baseCurrency, exchangeAcct) => {
 
 const main = async() => {
   const budgets = [
-    { id: '23694cd3-2247-4d5c-ae94-2a805edc5737', baseCurrency: 'USD', flag: '🇨🇦', exchangeAcct: '2a269ff9-0ae4-49f5-9098-ed7f23e747e6'}
+    { id: '23694cd3-2247-4d5c-ae94-2a805edc5737', baseCurrency: 'USD', flag: '🇨🇦', exchangeAcct: 'fad104ac-368e-412b-8934-b20562330608'}
   ];
 
   for (const budget of budgets) {
