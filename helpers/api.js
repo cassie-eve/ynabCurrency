@@ -44,12 +44,20 @@ const getServerKnowledge = async(budgetId) => {
       .eq('id', budgetId)
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('❌ CRITICAL ERROR:', { message: 'Failed to retrieve server knowledge from Supabase', budgetId, error });
+      throw new Error(`Failed to retrieve server knowledge from database: ${error.message}`);
+    }
 
-    return data ? data.server_knowledge : 0;
+    if (!data) {
+      console.error('❌ CRITICAL ERROR:', { message: 'No server knowledge record found', budgetId });
+      throw new Error(`No server knowledge found for budget: ${budgetId}`);
+    }
+
+    return data.server_knowledge;
   } catch (error) {
-    console.error('Error retrieving server knowledge:', error.message);
-    return 0;
+    console.error('❌ CRITICAL ERROR:', { message: 'Server knowledge retrieval failed', budgetId, error });
+    throw error; // Re-throw the error to stop the process
   }
 };
 
