@@ -1,5 +1,6 @@
 const { getExchangeRate, getTransactions, createTransaction, getAllAccounts, updateOriginalTransaction, searchTransactionsByMemo, deleteTransaction, updateServerKnowledge, getServerKnowledge } = require('./helpers/api');
 const calculateDifferenceTransaction = require('./helpers/transactions');
+require('dotenv').config();
 
 // eslint-disable-next-line no-unused-vars
 exports.handler = async(event, context) => {
@@ -74,7 +75,12 @@ const processBudget = async(budgetId, flag, baseCurrency, exchangeAcct) => {
 
 const main = async() => {
   const budgets = [
-    { id: '23694cd3-2247-4d5c-ae94-2a805edc5737', baseCurrency: 'USD', flag: '🇨🇦', exchangeAcct: 'fad104ac-368e-412b-8934-b20562330608'}
+    {
+      id: process.env.BUDGET_ID,
+      baseCurrency: 'USD',
+      flag: '🇨🇦',
+      exchangeAcct: process.env.EXCHANGE_ACCOUNT_ID
+    }
   ];
 
   for (const budget of budgets) {
